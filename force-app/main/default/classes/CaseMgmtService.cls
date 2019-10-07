@@ -1,7 +1,6 @@
 @RestResource(urlMapping='/CaseManagement/v1/*')
 global with sharing class CaseMgmtService
 {
-
     @HttpPost
     global static String attachPic(){
         RestRequest req = RestContext.request;
