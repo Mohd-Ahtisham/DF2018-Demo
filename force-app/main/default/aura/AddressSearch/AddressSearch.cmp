@@ -1,0 +1,117 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller="AddressSearchController">
+    <aura:attribute name="showModalBox" type="boolean" default="false"/>
+    <aura:attribute name="searchKey" type="string" default=""/>
+    <aura:attribute name="placeholder" type="string" default="Search address" />
+    <aura:attribute name="AddressList" type="String[]"/>
+    <aura:attribute name="addressDetails" type="Address_Details__c"/>
+    <aura:attribute name="recordId" type="Id" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <!--Address information section header -->
+    <div class="slds-grid slds-wrap slds-m-left_small slds-m-top_large">
+        <div class="slds-col slds-size_9-of-12">
+            <div class="slds-page-header">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__body">
+                                <div class="slds-page-header__name">
+                                    <div class="slds-page-header__name-title">
+                                        <h1>
+                                            <span class="slds-page-header__title slds-truncate" title="Address Information">Address Information</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--Address information input field list -->
+        <div class="slds-col slds-size_9-of-12 slds-m-top_medium">
+            <lightning:input label="HQ Address" onclick="{!c.OpenModal}" type="search" class="slds-lookup__search-input" placeholder="Search Address"  />   
+        </div>
+        
+        <div class="slds-col slds-size_9-of-12 slds-m-top_x-small">
+            <lightning:textarea name="Street" label="Street" class="StreetCs" value="{!v.addressDetails.Street__c}"/>
+        </div>
+        <div class="slds-col slds-size_6-of-12 slds-m-top_x-small">
+            <lightning:input name="City" label="City" value="{!v.addressDetails.City__c}"/>
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-m-left_xxx-small slds-m-top_x-small">
+            <lightning:input name="State" label="State/Province" value="{!v.addressDetails.State__c}"/>
+        </div>
+        <div class="slds-col slds-size_6-of-12 slds-m-top_x-small">
+            <lightning:input name="Zip/Postal Code" label="Zip/Postal Code" value="{!v.addressDetails.Postal_Code__c}"/>
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-m-left_xxx-small slds-m-top_x-small">
+            <lightning:input name="Country" label="Country" value="{!v.addressDetails.Country__c}"/>
+        </div>
+        <div class="slds-col slds-size_3-of-12 slds-m-top_medium">
+            <lightning:button name="save" label="save" variant="brand" onclick="{!c.saveAdress}"/>
+        </div>
+    </div>
+    
+    <!-- Modal box starts -->
+    <aura:if isTrue="{!v.showModalBox}">
+        <div class="" style="">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"><b>Address Search</b></h2>
+                    </header>
+                    
+                    <div class="">
+                        <div class="slds-size_12-of-12 slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right">
+                            <lightning:ButtonIcon size="medium" iconName="utility:close"  onclick="{!c.clear}" class="slds-m-right_xx-large slds-input__icon slds-input__icon_right" variant="bare"/>
+                            <lightning:input name="searchKey"
+                                             class="slds-p-bottom_large slds-input slds-combobox__input"
+                                             value="{!v.searchKey}"
+                                             onkeyup ="{!c.keyPressController}"
+                                             placeholder="Enter address.."/> 
+                        </div>
+                        <!-- list of address display -->
+                        <aura:if isTrue="{!not(empty(v.AddressList))}">
+                            <div class="Address-listbox" role="listbox">
+                                <ul aura:id="Address-listbox" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid" role="presentation">
+                                    <aura:iteration items="{!v.AddressList}" var="addList">
+                                        <li role="presentation"
+                                            onclick="{!c.selectOption}"
+                                            data-value="{!addList.place_id}"
+                                            class="slds-listbox__item">
+                                            <span id="listbox-option-unique-id-01"
+                                                  class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                  role="option">
+                                                <span class="slds-media__body slds-m-left_xx-small slds-m-bottom_xx-small">
+                                                    <div class="slds-grid slds-m-bottom_small">
+                                                        <div class="slds-col slds-size_1-of-10"> 
+                                                            <lightning:ButtonIcon size="medium" iconName="utility:checkin" class="slds-input__icon" variant="bare"/></div>
+                                                        <div class="slds-m-left_medium slds-col slds-size_8-of-10"> 
+                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity"><b>{!addList.main_text}</b></span>
+                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity slds-m-top_xxx-small">{!addList.secondary_text}</span></div>
+                                                        <div class="slds-col slds-size_1-of-10"></div>
+                                                    </div>
+                                                </span>
+                                            </span>
+                                        </li>
+                                    </aura:iteration>
+                                </ul>
+                            </div>
+                        </aura:if>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="brand" label="Cancel" title="Cancel" onclick="{!c.closeModal}" />
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        <!-- Modal box ends here -->
+    </aura:if>
+</aura:component>

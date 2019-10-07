@@ -1,0 +1,87 @@
+<aura:component description="StripePayment" access="global" controller="StripePaymentController">
+    <aura:attribute name="cardObj" type="Object" default="" />
+    <aura:attribute name="isStripeOpen" type="Boolean" default="false" />
+    <aura:attribute name="openStripe" type="Boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+   <div id="mainContent">
+       <div style="height:640px">
+           <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+               <div class="slds-modal__container">
+                   <header class="slds-modal__header">
+                       <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closePaymentPopup}">
+                           <lightning:icon iconName="utility:close" alternativeText="close" size="x-small"
+                                           title="Close"
+                                           variant="bare"/>
+                           <span class="slds-assistive-text">Close</span>
+                       </button>
+                       <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Payment</h2>
+                   </header>
+                   <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                       <div>
+                           <lightning:layout multipleRows="true">
+                               <lightning:layoutItem size="12" mediumDeviceSize="6" smallDeviceSize="6" largeDeviceSize="6" padding="around-small">
+                                   <label>Card Number</label>
+                               </lightning:layoutItem>
+                               <lightning:layoutItem size="12" mediumDeviceSize="6" smallDeviceSize="6" largeDeviceSize="6" padding="around-small">
+                                   <lightning:input aura:id="creditCardDetails" placeholder="Card Number" value="{!v.cardObj.cardNumber}" type="text" name="Card Number" label="" variant="label-hidden" maxlength="16" pattern="[0-9]*" required="true" onchange="{!c.cardNumberValidation}"/>
+                               </lightning:layoutItem>
+                               <lightning:layoutItem size="12" mediumDeviceSize="6" smallDeviceSize="6" largeDeviceSize="6" padding="around-small">
+                                   <label>Card Expiry Date</label>
+                               </lightning:layoutItem>
+                               <lightning:layoutItem size="12" mediumDeviceSize="3" smallDeviceSize="3" largeDeviceSize="3" padding="around-small">
+                                   <lightning:select label="" aura:id="creditCardDetails" value="{!v.cardObj.expiryMonth}" name="Card Month" variant="label-hidden" onchange="{!c.cardNumberValidation}">
+                                       <option value=" ">--Month--</option>
+                                       <option value="1">1</option>
+                                       <option value="2">2</option>
+                                       <option value="3">3</option>
+                                       <option value="4">4</option>
+                                       <option value="5">5</option>
+                                       <option value="6">6</option>
+                                       <option value="7">7</option>
+                                       <option value="8">8</option>
+                                       <option value="9">9</option>
+                                       <option value="10">10</option>
+                                       <option value="11">11</option>
+                                       <option value="12">12</option>
+                                   </lightning:select>
+                               </lightning:layoutItem>
+                               <lightning:layoutItem size="12" mediumDeviceSize="3" smallDeviceSize="3" largeDeviceSize="3" padding="around-small">
+                                   <lightning:select label="" aura:id="creditCardDetails" value="{!v.cardObj.expiryYear}" name="Card Year" variant="label-hidden" onchange="{!c.cardNumberValidation}">
+                                       <option value=" ">--Year--</option>
+                                       <option value="2020">2020</option>
+                                       <option value="2021">2021</option>
+                                       <option value="2022">2022</option>
+                                       <option value="2023">2023</option>
+                                       <option value="2024">2024</option>
+                                       <option value="2025">2025</option>
+                                       <option value="2026">2026</option>
+                                       <option value="2027">2027</option>
+                                       <option value="2028">2028</option>
+                                       <option value="2029">2029</option>
+                                       <option value="2030">2030</option>
+                                       <option value="2031">2031</option>
+                                       <option value="2032">2032</option>
+                                       <option value="2033">2033</option>
+                                       <option value="2034">2034</option>
+                                   </lightning:select>
+                               </lightning:layoutItem>
+                               <lightning:layoutItem size="12" mediumDeviceSize="6" smallDeviceSize="6" largeDeviceSize="6" padding="around-small">
+                                   <label>CVC Number</label>
+                               </lightning:layoutItem>
+                               <lightning:layoutItem size="12" mediumDeviceSize="6" smallDeviceSize="6" largeDeviceSize="6" padding="around-small">
+                                   <lightning:input aura:id="creditCardDetails" placeholder="CVC Code" value="{!v.cardObj.cvcNumber}" maxlength="4" type="password" name="CVC Number" label="" variant="label-hidden" pattern="[0-9]*" required="true" onchange="{!c.cardNumberValidation}"/>
+                               </lightning:layoutItem>
+                           </lightning:layout>
+                       </div>
+                   </div>
+                   <footer class="slds-modal__footer slds-p-around_medium slds-modal__footer_directional">
+                       <lightning:button iconName="utility:close" variant="neutral" value="" label="Close" class="payButtonClass" onclick="{!c.closePaymentPopup}"/>
+                       <lightning:button iconName="utility:money" variant="brand" value="" label="Pay" class="payButtonClass" onclick="{!c.getCardToken}" disabled="{!v.isStripeOpen}"/>
+                   </footer>
+               </div>
+           </section>
+           <div class="slds-backdrop slds-backdrop_open"></div>
+       </div>
+   </div>
+</aura:component>
