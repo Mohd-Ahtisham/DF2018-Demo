@@ -5,7 +5,12 @@ jobs:
       - image: alpine:3.7
     steps:
       - run:
-          name: The First Step
-          command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+          name: Install Dependencies
+          command: . build/install.sh
+      - run:
+          name: Create Scratch Org
+          command: . build/create-scratch-org.sh
+      - run:
+          name: Validate Components & Run Tests 
+          command: . build/test.sh
+            
