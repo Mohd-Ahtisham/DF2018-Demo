@@ -12,6 +12,7 @@ global with sharing class CaseMgmtService
                                        ContentType = 'image/jpg',
                                        Name = 'VehiclePicture');
         insert a;
+        system.debug('a------>'+a);
         return a.Id;
    }
 }
